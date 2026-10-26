@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snack Out – Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f1;--card:#fff;--ink:#12302a;--mute:#5b706a;--line:#d8e2dc;--accent:#e9a823;--accent-ink:#2a1d00;--wa:#1a7f4b;--danger:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a17;--card:#17261f;--ink:#e8f0ec;--mute:#93a8a0;--line:#2a3d35;--accent:#f0b73a;--wa:#35b36f;--danger:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0f1a17;--card:#17261f;--ink:#e8f0ec;--mute:#93a8a0;--line:#2a3d35;--accent:#f0b73a;--wa:#35b36f;--danger:#ff8a80}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px);color-scheme:light dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:96px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{padding:28px 20px 16px;max-width:640px;margin:0 auto}
+h1,h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.02em}
+h1{font-size:2.1rem;line-height:1.05}
+header p{margin:8px 0 0;color:var(--mute)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;max-width:640px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+main{max-width:640px;margin:0 auto;padding:0 20px}
+section{padding-top:24px}
+h2{font-size:1.35rem;margin-bottom:6px}
+.item{display:flex;gap:14px;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.item h3{margin:0;font-size:1rem}
+.item p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
+.price{font-weight:700;margin-top:4px}
+.tag{display:inline-block;margin-left:6px;font-size:.75rem;font-weight:600;color:var(--wa)}
+.item.out{opacity:.55}
+.ctrl{flex:none;display:flex;align-items:center;gap:10px}
+.ctrl button[data-q]{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1.2rem;line-height:1;cursor:pointer}
+.ctrl .add{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important;font-weight:700}
+.ctrl span{min-width:1ch;text-align:center;font-weight:700}
+.soldout{font-size:.85rem;font-weight:600;color:var(--mute)}
+.ed{flex-direction:column;align-items:stretch}
+.ed .ctrl{flex-wrap:wrap}
+.pill,.owner button,#admin button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.pill.del{color:var(--danger);border-color:var(--danger)}
+.pr{display:flex;align-items:center;gap:6px;font-weight:700}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0}
+.pr input{width:90px}
+#admin{max-width:640px;margin:0 auto;padding:0 20px 12px}
+#admin .panel{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px;display:grid;gap:8px}
+#admin .row{display:flex;gap:8px;flex-wrap:wrap}
+#admin .row input{flex:1 1 120px}
+#admin .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#status{margin:8px 0 0;font-size:.9rem;color:var(--mute)}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .2s}
+#bar.show{transform:none}
+#bar a{display:flex;justify-content:space-between;max-width:608px;margin:0 auto;padding:14px 18px;background:var(--wa);color:#fff;border-radius:14px;text-decoration:none;font-weight:700}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#bar{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Snack Out</h1>
+  <p>Tap + to build your order, then send it to us on WhatsApp.</p>
+</header>
+<div id="admin"></div>
+<nav><div class="tabs" id="tabs"></div></nav>
+<main id="menu"></main>
+<div id="bar" class=""><a id="send" href="#" target="_blank" rel="noopener"><span id="count"></span><span id="total"></span></a></div>
+<script type="application/json" id="data">[{"cat":"Coffee","items":[{"id":"c1","name":"Flat white","desc":"Double shot, silky milk","price":45},{"id":"c2","name":"Cold brew","desc":"Steeped 18 hours, over ice","price":50,"tag":"Popular"},{"id":"c3","name":"Cardamom latte","desc":"House-made cardamom syrup","price":55},{"id":"c4","name":"Espresso","desc":"Single origin","price":30},{"id":"i1793001375372","name":"Nescafe black","desc":"","price":10}]},{"cat":"Breakfast","items":[{"id":"b1","name":"Avocado toast","desc":"Sourdough, lime, chilli flakes","price":95,"tag":"Vegan"},{"id":"b2","name":"Masala omelette","desc":"Two eggs, onion, green chilli, toast","price":80},{"id":"b3","name":"Granola bowl","desc":"Yoghurt, seasonal fruit, honey","price":75}]},{"cat":"Bakes","items":[{"id":"k1","name":"Butter croissant","desc":"Baked fresh each morning","price":35},{"id":"k2","name":"Banana bread","desc":"Walnut, brown butter","price":40,"soldOut":true},{"id":"k3","name":"Brownie","desc":"Dark chocolate, sea salt","price":38}]},{"cat":"Cold drinks","items":[{"id":"d1","name":"Fresh lime soda","desc":"Sweet, salted or mixed","price":35},{"id":"d2","name":"Mango lassi","desc":"Alphonso mango, yoghurt","price":50}]}]</script>
+<script>
+const CONFIG = {
+  whatsapp: "9607952658",   // country code + number, digits only
+  currency: "MVR ",
+  greeting: "Hi Snack Out, I’d like to order:"
+};
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = n => CONFIG.currency + (Number.isInteger(n) ? n : n.toFixed(2));
+let DATA = JSON.parse($("data").textContent), edit = false, snapshot = "", qty = {}, canEdit = false, artifact = null;
+
+const find = id => { for (const c of DATA) for (const i of c.items) if (i.id === id) return i; };
+
+function rowHtml(i) {
+  const q = qty[i.id] || 0;
+  const info = '<div><h3>' + esc(i.name) + (i.tag ? '<span class="tag">' + esc(i.tag) + '</span>' : '') + '</h3><p>' + esc(i.desc) + '</p>' + (edit ? '' : '<div class="price">' + money(i.price) + '</div>') + '</div>';
+  let ctrl;
+  if (edit) {
+    ctrl = '<label class="pr">' + esc(CONFIG.currency) + '<input type="number" min="0" step="any" inputmode="decimal" value="' + i.price + '" data-price="' + i.id + '" aria-label="Price of ' + esc(i.name) + '"></label>' +
+      '<button class="pill" data-so="' + i.id + '">' + (i.soldOut ? "Mark available" : "Mark sold out") + '</button>' +
+      '<button class="pill del" data-del="' + i.id + '">Remove</button>';
+  } else if (i.soldOut) {
+    ctrl = '<span class="soldout">Sold out</span>';
+  } else if (q) {
+    ctrl = '<button data-q="' + i.id + ':-1" aria-label="Remove one ' + esc(i.name) + '">−</button><span>' + q + '</span><button class="add" data-q="' + i.id + ':1" aria-label="Add one ' + esc(i.name) + '">+</button>';
+  } else {
+    ctrl = '<button class="add" data-q="' + i.id + ':1" aria-label="Add ' + esc(i.name) + '">+</button>';
+  }
+  return '<div class="item' + (i.soldOut ? " out" : "") + (edit ? " ed" : "") + '">' + info + '<div class="ctrl">' + ctrl + '</div></div>';
+}
+
+function render() {
+  $("tabs").innerHTML = DATA.map((c, n) => '<button data-tab="' + n + '">' + esc(c.cat) + '</button>').join("");
+  $("menu").innerHTML = DATA.map((c, n) => '<section id="cat' + n + '"><h2>' + esc(c.cat) + '</h2>' + c.items.map(rowHtml).join("") + '</section>').join("");
+  drawBar();
+}
+
+function drawBar() {
+  const ids = Object.keys(qty).filter(id => qty[id] > 0 && find(id) && !find(id).soldOut);
+  $("bar").classList.toggle("show", ids.length > 0 && !edit);
+  if (!ids.length) return;
+  const count = ids.reduce((s, id) => s + qty[id], 0);
+  const total = ids.reduce((s, id) => s + qty[id] * find(id).price, 0);
+  $("count").textContent = "Send order · " + count + (count === 1 ? " item" : " items");
+  $("total").textContent = money(total);
+  const lines = ids.map(id => qty[id] + " × " + find(id).name + " (" + money(qty[id] * find(id).price) + ")");
+  $("send").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(CONFIG.greeting + "\n" + lines.join("\n") + "\nTotal: " + money(total));
+}
+
+function drawAdmin() {
+  const a = $("admin");
+  if (!canEdit) { a.innerHTML = ""; return; }
+  if (!edit) { a.innerHTML = '<button id="startEdit">Edit menu</button>'; return; }
+  a.innerHTML = '<div class="panel"><strong>Add an item</strong>' +
+    '<div class="row"><input id="nCat" list="cats" placeholder="Category (e.g. Coffee)" aria-label="Category"><input id="nName" placeholder="Item name" aria-label="Item name"></div>' +
+    '<div class="row"><input id="nDesc" placeholder="Short description (optional)" aria-label="Description"><input id="nPrice" type="number" min="0" step="any" inputmode="decimal" placeholder="Price" aria-label="Price"></div>' +
+    '<datalist id="cats">' + DATA.map(c => '<option value="' + esc(c.cat) + '">').join("") + '</datalist>' +
+    '<div class="row"><button id="addItem">Add item</button></div>' +
+    '<div class="row"><button class="primary" id="saveEdit">Save and publish</button><button id="cancelEdit">Cancel</button></div>' +
+    '<p id="status" role="status">Changes go live for customers after you save.</p></div>';
+}
+
+function buildDoc() {
+  const c = document.documentElement.cloneNode(true);
+  c.querySelector("#data").textContent = JSON.stringify(DATA).replace(/</g, "\\u003c");
+  ["#menu", "#tabs", "#admin", "#count", "#total"].forEach(s => c.querySelector(s).textContent = "");
+  c.querySelector("#bar").className = "";
+  c.querySelector("#send").setAttribute("href", "#");
+  return "<!DOCTYPE html>\n" + c.outerHTML;
+}
+
+document.addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  const d = t.dataset;
+  if (d.tab !== undefined) { $("cat" + d.tab).scrollIntoView({behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"}); return; }
+  if (d.q) { const [id, n] = d.q.split(":"); qty[id] = Math.max(0, (qty[id] || 0) + Number(n)); render(); return; }
+  if (d.so) { const i = find(d.so); i.soldOut = !i.soldOut; render(); return; }
+  if (d.del) {
+    DATA.forEach(c => c.items = c.items.filter(i => i.id !== d.del));
+    DATA = DATA.filter(c => c.items.length); delete qty[d.del]; render(); drawAdmin(); return;
+  }
+  if (t.id === "startEdit") { edit = true; snapshot = JSON.stringify(DATA); drawAdmin(); render(); return; }
+  if (t.id === "cancelEdit") { DATA = JSON.parse(snapshot); edit = false; drawAdmin(); render(); return; }
+  if (t.id === "addItem") {
+    const cat = $("nCat").value.trim(), name = $("nName").value.trim(), price = parseFloat($("nPrice").value);
+    if (!cat || !name || isNaN(price) || price < 0) { $("status").textContent = "Enter a category, item name and price."; return; }
+    let c = DATA.find(x => x.cat.toLowerCase() === cat.toLowerCase());
+    if (!c) { c = {cat, items: []}; DATA.push(c); }
+    c.items.push({id: "i" + Date.now(), name, desc: $("nDesc").value.trim(), price});
+    ["nName", "nDesc", "nPrice"].forEach(k => $(k).value = "");
+    $("status").textContent = "Added " + name + ". Save and publish when you’re done.";
+    render(); return;
+  }
+  if (t.id === "saveEdit") {
+    $("status").textContent = "Publishing…"; t.disabled = true;
+    try { await artifact.publish(buildDoc()); }
+    catch (err) { t.disabled = false; $("status").textContent = err && err.code === "conflict" ? "The menu was changed somewhere else. Reload and try again." : "Couldn’t publish. Check you have edit access and try again."; }
+  }
+});
+document.addEventListener("change", e => {
+  const id = e.target.dataset && e.target.dataset.price;
+  if (id) { const v = parseFloat(e.target.value); if (!isNaN(v) && v >= 0) find(id).price = v; }
+});
+
+render();
+(async () => {
+  try {
+    const user = await claude.use("user"), art = await claude.use("artifact");
+    if (user && art && user.isOwner()) { artifact = art; canEdit = true; drawAdmin(); }
+  } catch (e) {}
+})();
+</script>
+
+
+</body></html>
